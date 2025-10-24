@@ -3,9 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>paulfaitdestrucs</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Hello, world!</h1>
+  <main>
+    <header class="site-header">
+      <h1>paul_fait_des_trucs</h1>
+      <p class="subhead">paul_does_things</p>
+    </header>
+    <section>
+      <ul id="posts-list">
+        <li>Loading posts...</li>
+      </ul>
+    </section>
+  </main>
+  <script>
+    // Fetch posts manifest and render a simple list of links.
+    async function loadPosts() {
+      try {
+        const response = await fetch('posts/posts.json');
+        if (!response.ok) throw new Error('Network response was not ok');
+
+        const posts = await response.json();
+        const list = document.getElementById('posts-list');
+        list.innerHTML = '';
+
+        posts.forEach((post) => {
+          const item = document.createElement('li');
+          const link = document.createElement('a');
+          link.href = `posts/${post.slug}/index.html`;
+          link.textContent = post.title;
+
+          const date = document.createElement('span');
+          date.className = 'post-date';
+          if (post.date) {
+            const parsedDate = new Date(post.date);
+            if (!Number.isNaN(parsedDate.valueOf())) {
+              date.textContent = parsedDate.toLocaleDateString(undefined, {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+              });
+            } else {
+              date.textContent = post.date;
+            }
+          }
+
+          item.appendChild(link);
+          item.appendChild(date);
+          list.appendChild(item);
+        });
+
+        if (!posts.length) {
+          list.innerHTML = '<li>No posts yet. Check back soon!</li>';
+        }
+      } catch (error) {
+        const list = document.getElementById('posts-list');
+        list.innerHTML = '<li>Could not load posts.</li>';
+        console.error('Error loading posts:', error);
+      }
+    }
+
+    loadPosts();
+  </script>
 </body>
 </html>
