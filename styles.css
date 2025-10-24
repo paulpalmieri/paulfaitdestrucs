@@ -7,7 +7,31 @@
   --muted: #666;
   --accent: #2563eb;
   --border: #e5e5e5;
+  --page-transition-duration: 240ms;
+  --page-transition-easing: cubic-bezier(0.33, 1, 0.68, 1);
   font-family: "Source Code Pro", "Fira Code", "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+}
+
+@keyframes fade-page-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes content-float-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 * {
@@ -22,6 +46,8 @@ body {
   display: flex;
   justify-content: center;
   padding: 2rem 1rem 4rem;
+  opacity: 0;
+  animation: fade-page-in var(--page-transition-duration) var(--page-transition-easing) forwards;
 }
 
 main {
@@ -30,6 +56,8 @@ main {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  will-change: opacity, transform;
+  animation: content-float-in calc(var(--page-transition-duration) * 1.15) var(--page-transition-easing) both;
 }
 
 .site-header h1 {
@@ -135,4 +163,15 @@ nav {
 
 nav a {
   font-size: 0.95rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    animation: none;
+    opacity: 1;
+  }
+
+  main {
+    animation: none;
+  }
 }
